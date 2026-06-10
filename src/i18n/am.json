@@ -1,0 +1,31 @@
+{
+  "nav": {
+    "parks": "ፓርኮች",
+    "events": "ዝግጅቶች",
+    "map": "ካርታ",
+    "login": "ግባ",
+    "register": "ተመዝገብ",
+    "logout": "ውጣ"
+  },
+  "home": {
+    "hero_title": "የአዲስ አበባ ፓርኮችን ያስሱ",
+    "hero_subtitle": "ፓርኮችን ያስሱ፣ ባህላዊ ዝግጅቶችን ይጎብኙ፣ እና የኢትዮጵያ ዋና ከተማ ውበትን ይለማመዱ",
+    "explore_parks": "ፓርኮችን ያስሱ",
+    "view_events": "ዝግጅቶችን ይመልከቱ",
+    "featured_parks": "ዋና ፓርኮች",
+    "upcoming_events": "መጪ ዝግጅቶች"
+  },
+  "parks": {
+    "search_placeholder": "ፓርኮች ይፈልጉ...",
+    "free": "ነፃ",
+    "reviews": "ግምገማዎች",
+    "no_results": "ፓርኮች አልተገኙም"
+  },
+  "reviews": {
+    "write": "ግምገማ ጻፍ",
+    "login_required": "ግምገማ ለመጻፍ እባክዎ ይግቡ",
+    "rating": "ደረጃ",
+    "your_review": "ግምገማዎ",
+    "submit": "ግምገማ ላክ"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "nav": {
+    "parks": "Parks",
+    "events": "Events",
+    "map": "Map",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout"
+  },
+  "home": {
+    "hero_title": "Discover Addis Ababa's Parks",
+    "hero_subtitle": "Explore parks, attend cultural events, and experience the beauty of Ethiopia's capital",
+    "explore_parks": "Explore Parks",
+    "view_events": "View Events",
+    "featured_parks": "Featured Parks",
+    "upcoming_events": "Upcoming Events"
+  },
+  "parks": {
+    "search_placeholder": "Search parks...",
+    "free": "Free",
+    "reviews": "reviews",
+    "no_results": "No parks found"
+  },
+  "reviews": {
+    "write": "Write a Review",
+    "login_required": "Please login to write a review",
+    "rating": "Rating",
+    "your_review": "Your review",
+    "submit": "Submit Review"
+  }
+}
