@@ -10,6 +10,7 @@ import { useAuthStore } from '../store/auth.store';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
+import ImageCarousel from '../components/ImageCarousel';
 
 // Fix leaflet default marker icons
 delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)['_getIconUrl'];
@@ -33,24 +34,26 @@ export default function ParkDetail() {
     defaultValues: { rating: 5 },
   });
 
-  const loadReviews = useCallback(() => {
-    if (id) parksApi.getReviews(id).then((r) => setReviewData(r.data));
-  }, [id]);
+  const loadReviews = useCallback((parkId: string) => {
+    parksApi.getReviews(parkId).then((r) => setReviewData(r.data));
+  }, []);
 
   useEffect(() => {
     if (id) {
-      parksApi.get(id).then((r) => setPark(r.data));
-      loadReviews();
+      parksApi.get(id).then((r) => {
+        setPark(r.data);
+        loadReviews(r.data.id);
+      });
     }
   }, [id, loadReviews]);
 
   const onReviewSubmit = async (data: ReviewFormData) => {
-    if (!id) return;
+    if (!park) return;
     try {
       setReviewError('');
-      await parksApi.submitReview(id, { body: data.body, rating: Number(data.rating) });
+      await parksApi.submitReview(park.id, { body: data.body, rating: Number(data.rating) });
       reset({ rating: 5 });
-      loadReviews();
+      loadReviews(park.id);
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
         setReviewError(err.response?.data?.error ?? 'Failed to submit review');
@@ -62,7 +65,6 @@ export default function ParkDetail() {
 
   if (!park) return <div className="text-center py-20 text-gray-400">Loading...</div>;
 
-  const primaryImage = park.media?.find((m) => m.isPrimary && m.type === 'IMAGE');
   const openingHoursEntries = Object.entries(park.openingHours as Record<string, string>);
 
   const serviceEmoji: Record<string, string> = {
@@ -72,14 +74,8 @@ export default function ParkDetail() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-10">
-      {/* Header image */}
-      <div className="h-72 rounded-2xl overflow-hidden bg-gradient-to-br from-green-100 to-green-300 mb-8">
-        {primaryImage ? (
-          <img src={primaryImage.url} alt={park.name} className="w-full h-full object-cover" />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-8xl">🌳</div>
-        )}
-      </div>
+      {/* Image carousel */}
+      <ImageCarousel images={park.media} title={park.name} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main content */}

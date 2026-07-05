@@ -198,32 +198,30 @@ export default function Home() {
       </section>
 
       {/* ── UPCOMING EVENTS ────────────────────────────────────── */}
-      <section className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex items-end justify-between mb-10">
-            <div>
-              <p className="text-xs font-bold tracking-widest text-emerald-600 uppercase mb-2">
-                What's On
-              </p>
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900">Upcoming Events</h2>
+      {!loading && events.length > 0 && (
+        <section className="py-20 bg-white">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="flex items-end justify-between mb-10">
+              <div>
+                <p className="text-xs font-bold tracking-widest text-emerald-600 uppercase mb-2">
+                  What's On
+                </p>
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900">Upcoming Events</h2>
+              </div>
+              <Link
+                to="/events"
+                className="hidden sm:inline-flex items-center gap-2 text-sm font-semibold text-green-600 hover:text-green-700 border border-green-200 hover:border-green-400 px-5 py-2.5 rounded-full transition-all"
+              >
+                View all <ArrowRight size={14} />
+              </Link>
             </div>
-            <Link
-              to="/events"
-              className="hidden sm:inline-flex items-center gap-2 text-sm font-semibold text-green-600 hover:text-green-700 border border-green-200 hover:border-green-400 px-5 py-2.5 rounded-full transition-all"
-            >
-              View all <ArrowRight size={14} />
-            </Link>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {loading
-              ? Array.from({ length: 3 }).map((_, i) => (
-                  <div key={i} className="h-36 rounded-3xl bg-gray-100 animate-pulse" />
-                ))
-              : events.map((event) => <EventCard key={event.id} event={event} />)}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {events.map((event) => <EventCard key={event.id} event={event} />)}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ── CTA BANNER ─────────────────────────────────────────── */}
       <section className="py-20 bg-gradient-to-br from-green-700 to-emerald-600 relative overflow-hidden">

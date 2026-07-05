@@ -18,15 +18,25 @@ export interface Park {
   _count: { reviews: number };
 }
 
+export interface Review {
+  id: string;
+  userId: string;
+  parkId: string;
+  body: string;
+  rating: number;
+  createdAt: string;
+  user: { id: string; name: string };
+}
+
 export interface ReviewData {
-  reviews: Array<{ id: string; body: string; rating: number; createdAt: string; user: { name: string } }>;
+  reviews: Review[];
   average: number;
   total: number;
 }
 
 export const parksApi = {
   list: (search?: string) => client.get<Park[]>('/parks', { params: { search } }),
-  get: (id: string) => client.get<Park>(`/parks/${id}`),
+  get: (slug: string) => client.get<Park>(`/parks/${slug}`),
   getReviews: (id: string) => client.get<ReviewData>(`/parks/${id}/reviews`),
   submitReview: (id: string, data: { body: string; rating: number }) =>
     client.post(`/parks/${id}/reviews`, data),
