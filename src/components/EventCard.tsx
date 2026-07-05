@@ -75,7 +75,7 @@ export default function EventCard({ event }: { event: Event }) {
             </div>
           )}
 
-          <h3 className="font-bold text-gray-900 text-sm mb-1 group-hover:text-green-700 transition-colors line-clamp-2">
+          <h3 className="font-display text-lg leading-snug text-forest-ink mb-1.5 group-hover:text-primary-green transition-colors line-clamp-2">
             {event.title}
           </h3>
           <p className="text-xs text-gray-400 line-clamp-2 mb-3 leading-relaxed">{event.description}</p>

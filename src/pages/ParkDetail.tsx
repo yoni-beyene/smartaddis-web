@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
-import { DollarSign, Star, Clock, Calendar } from 'lucide-react';
+import { DollarSign, Star, Clock, Calendar, ArrowRight } from 'lucide-react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { parksApi, mediaUrl } from '../api/parks.api';
@@ -70,7 +70,21 @@ export default function ParkDetail() {
     }
   };
 
-  if (!park) return <div className="text-center py-20 text-gray-400">Loading...</div>;
+  if (!park) {
+    return (
+      <div className="max-w-5xl mx-auto px-4 py-10 animate-pulse">
+        <div className="h-72 md:h-96 rounded-3xl bg-gray-100 mb-8" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-4">
+            <div className="h-10 w-2/3 rounded-lg bg-gray-100" />
+            <div className="h-4 w-full rounded bg-gray-100" />
+            <div className="h-4 w-5/6 rounded bg-gray-100" />
+          </div>
+          <div className="h-64 rounded-2xl bg-gray-100" />
+        </div>
+      </div>
+    );
+  }
 
   const openingHoursEntries = Object.entries(park.openingHours as Record<string, string>);
 
@@ -86,39 +100,46 @@ export default function ParkDetail() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main content */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-10">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">{park.name}</h1>
-            <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
-              <span className="flex items-center gap-1">
-                <Star size={14} className="text-amber-400 fill-amber-400" />
-                {reviewData?.average?.toFixed(1) ?? '0.0'}/5 ({reviewData?.total ?? 0} reviews)
+            <h1 className="font-display font-normal text-4xl md:text-5xl leading-[1.05] tracking-tight text-forest-ink mb-4">
+              {park.name}
+            </h1>
+            <div className="flex flex-wrap items-center gap-2.5 mb-5">
+              <span className="inline-flex items-center gap-1.5 bg-amber-50 text-amber-700 rounded-full px-3 py-1 text-sm font-medium">
+                <Star size={14} className="fill-amber-400 text-amber-400" />
+                {reviewData?.average?.toFixed(1) ?? '0.0'}
+                <span className="text-amber-600/60">({reviewData?.total ?? 0})</span>
               </span>
-              <span className="flex items-center gap-1">
+              <span className="inline-flex items-center gap-1.5 bg-green-50 text-primary-green rounded-full px-3 py-1 text-sm font-medium">
                 <DollarSign size={14} />
                 {park.entryFee || 'Free'}
               </span>
             </div>
-            <p className="text-gray-600 leading-relaxed">{park.description}</p>
+            <p className="text-gray-600 text-lg leading-relaxed">{park.description}</p>
           </div>
 
           {park.history && (
             <div>
-              <h2 className="text-xl font-semibold text-gray-800 mb-3">History</h2>
+              <h2 className="font-display text-2xl text-forest-ink mb-3 flex items-center gap-3">
+                <span className="h-px w-6 bg-accent-gold" /> History
+              </h2>
               <p className="text-gray-600 leading-relaxed">{park.history}</p>
             </div>
           )}
 
           {park.events.length > 0 && (
             <div>
-              <h2 className="text-xl font-semibold text-gray-800 mb-3">Upcoming Events</h2>
+              <h2 className="font-display text-2xl text-forest-ink mb-4 flex items-center gap-3">
+                <span className="h-px w-6 bg-accent-gold" /> Upcoming events
+              </h2>
               <div className="space-y-3">
                 {park.events.map((e) => {
                   const img = e.imageUrl ? mediaUrl(e.imageUrl) : null;
                   return (
                     <div
                       key={e.id}
-                      className="group flex overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm hover:shadow-md transition-shadow"
+                      className="group flex overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm hover:border-accent-gold/40 hover:shadow-md transition-all"
                     >
                       <div className="relative w-28 sm:w-36 shrink-0 overflow-hidden bg-gradient-to-br from-green-100 to-emerald-200">
                         {img ? (
@@ -141,7 +162,7 @@ export default function ParkDetail() {
                             {e.category}
                           </span>
                         </div>
-                        <h3 className="font-bold text-gray-800 text-sm mb-1 line-clamp-2 group-hover:text-green-700 transition-colors">
+                        <h3 className="font-display text-lg leading-snug text-forest-ink mb-1 line-clamp-2 group-hover:text-primary-green transition-colors">
                           {e.title}
                         </h3>
                         {e.description && (
@@ -167,21 +188,21 @@ export default function ParkDetail() {
 
           {/* Reviews section */}
           <div>
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">
-              Reviews{' '}
+            <h2 className="font-display text-2xl text-forest-ink mb-4 flex items-center gap-3">
+              <span className="h-px w-6 bg-accent-gold" /> Reviews
               {reviewData && (
-                <span className="text-sm font-normal text-gray-400">({reviewData.total})</span>
+                <span className="text-base font-sans font-normal text-gray-400">({reviewData.total})</span>
               )}
             </h2>
 
             {user ? (
-              <form onSubmit={handleSubmit(onReviewSubmit)} className="bg-gray-50 rounded-xl p-4 mb-6">
-                <h3 className="font-medium text-gray-800 mb-3">{t('reviews.write')}</h3>
+              <form onSubmit={handleSubmit(onReviewSubmit)} className="bg-gray-50 rounded-2xl p-5 mb-6 border border-gray-100">
+                <h3 className="font-medium text-forest-ink mb-3">{t('reviews.write')}</h3>
                 <div className="mb-3">
                   <label className="text-sm text-gray-600 block mb-1">{t('reviews.rating')}</label>
                   <select
                     {...register('rating')}
-                    className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-accent-gold/60"
                   >
                     {[5, 4, 3, 2, 1].map((r) => (
                       <option key={r} value={r}>{r} star{r !== 1 ? 's' : ''}</option>
@@ -192,36 +213,36 @@ export default function ParkDetail() {
                   {...register('body', { required: true })}
                   rows={3}
                   placeholder={t('reviews.your_review')}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 mb-3"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-accent-gold/60 mb-3"
                 />
                 {reviewError && <p className="text-red-500 text-xs mb-2">{reviewError}</p>}
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 disabled:opacity-60 transition-colors"
+                  className="bg-dark-forest text-cotton px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-primary-green disabled:opacity-60 active:scale-95 transition-all"
                 >
                   {isSubmitting ? 'Submitting...' : t('reviews.submit')}
                 </button>
               </form>
             ) : (
-              <p className="text-sm text-gray-500 bg-gray-50 rounded-xl p-4 mb-4">
+              <p className="text-sm text-gray-500 bg-gray-50 rounded-2xl p-5 mb-4 border border-gray-100">
                 {t('reviews.login_required')}
               </p>
             )}
 
             <div className="space-y-3">
               {reviewData?.reviews.map((r) => (
-                <div key={r.id} className="border border-gray-100 rounded-xl p-4">
+                <div key={r.id} className="border border-gray-100 rounded-2xl p-4">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="font-medium text-gray-800 text-sm">{r.user.name}</span>
+                    <span className="font-semibold text-forest-ink text-sm">{r.user.name}</span>
                     <div className="flex">
                       {Array.from({ length: r.rating }).map((_, i) => (
                         <Star key={i} size={12} className="text-amber-400 fill-amber-400" />
                       ))}
                     </div>
                   </div>
-                  <p className="text-sm text-gray-600">{r.body}</p>
-                  <p className="text-xs text-gray-400 mt-1">{new Date(r.createdAt).toLocaleDateString()}</p>
+                  <p className="text-sm text-gray-600 leading-relaxed">{r.body}</p>
+                  <p className="text-xs text-gray-400 mt-2">{new Date(r.createdAt).toLocaleDateString()}</p>
                 </div>
               ))}
             </div>
@@ -231,11 +252,11 @@ export default function ParkDetail() {
         {/* Sidebar */}
         <div className="space-y-4">
           <div className="bg-white rounded-2xl border border-gray-200 p-5">
-            <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-              <Clock size={16} /> Opening Hours
+            <h3 className="font-display text-lg text-forest-ink mb-3 flex items-center gap-2">
+              <Clock size={16} className="text-primary-green" /> Opening hours
             </h3>
             {openingHoursEntries.map(([day, hours]) => (
-              <div key={day} className="flex justify-between text-sm py-1 border-b border-gray-100 last:border-0">
+              <div key={day} className="flex justify-between text-sm py-1.5 border-b border-gray-100 last:border-0">
                 <span className="text-gray-500 capitalize">{day}</span>
                 <span className="font-medium text-gray-700">{hours}</span>
               </div>
@@ -244,12 +265,12 @@ export default function ParkDetail() {
 
           {park.services.length > 0 && (
             <div className="bg-white rounded-2xl border border-gray-200 p-5">
-              <h3 className="font-semibold text-gray-800 mb-3">Services</h3>
-              <div className="space-y-2">
+              <h3 className="font-display text-lg text-forest-ink mb-3">Services</h3>
+              <div className="grid grid-cols-2 gap-2">
                 {park.services.map((s) => (
-                  <div key={s.id} className="flex items-center gap-2 text-sm text-gray-600">
+                  <div key={s.id} className="flex items-center gap-2 text-sm text-gray-600 bg-gray-50 rounded-lg px-3 py-2">
                     <span>{serviceEmoji[s.type] ?? '🏷️'}</span>
-                    {s.name}
+                    <span className="truncate">{s.name}</span>
                   </div>
                 ))}
               </div>
@@ -272,9 +293,9 @@ export default function ParkDetail() {
               href={`https://www.google.com/maps/dir/?api=1&destination=${park.latitude},${park.longitude}`}
               target="_blank"
               rel="noreferrer"
-              className="block text-center text-sm text-green-600 hover:text-green-700 py-3 font-medium"
+              className="flex items-center justify-center gap-1.5 text-sm font-semibold text-dark-forest hover:text-primary-green py-3.5 transition-colors"
             >
-              Get Directions →
+              Get directions <ArrowRight size={15} />
             </a>
           </div>
         </div>
