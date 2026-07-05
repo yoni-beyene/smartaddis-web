@@ -14,7 +14,7 @@ export interface Park {
   entryFee?: string; isActive: boolean;
   services: Array<{ id: string; type: string; name: string; description?: string }>;
   media: Array<{ id: string; url: string; type: string; isPrimary: boolean }>;
-  events: Array<{ id: string; title: string; startDate: string; endDate: string; category: string }>;
+  events: Array<{ id: string; title: string; description?: string; startDate: string; endDate: string; category: string; imageUrl?: string }>;
   _count: { reviews: number };
 }
 

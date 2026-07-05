@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
-import { DollarSign, Star, Clock } from 'lucide-react';
+import { DollarSign, Star, Clock, Calendar } from 'lucide-react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { parksApi } from '../api/parks.api';
+import { parksApi, mediaUrl } from '../api/parks.api';
 import type { Park, ReviewData } from '../api/parks.api';
 import { useAuthStore } from '../store/auth.store';
 import { useForm } from 'react-hook-form';
@@ -21,6 +21,13 @@ L.Icon.Default.mergeOptions({
 });
 
 interface ReviewFormData { body: string; rating: number; }
+
+const eventCategoryColors: Record<string, string> = {
+  CULTURAL: 'bg-purple-100 text-purple-700',
+  FESTIVAL: 'bg-pink-100 text-pink-700',
+  COMMUNITY: 'bg-blue-100 text-blue-700',
+  SEASONAL: 'bg-amber-100 text-amber-700',
+};
 
 export default function ParkDetail() {
   const { id } = useParams<{ id: string }>();
@@ -105,13 +112,55 @@ export default function ParkDetail() {
           {park.events.length > 0 && (
             <div>
               <h2 className="text-xl font-semibold text-gray-800 mb-3">Upcoming Events</h2>
-              <div className="space-y-2">
-                {park.events.map((e) => (
-                  <div key={e.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-                    <span className="font-medium text-gray-800 text-sm">{e.title}</span>
-                    <span className="text-xs text-gray-400">{new Date(e.startDate).toLocaleDateString()}</span>
-                  </div>
-                ))}
+              <div className="space-y-3">
+                {park.events.map((e) => {
+                  const img = e.imageUrl ? mediaUrl(e.imageUrl) : null;
+                  return (
+                    <div
+                      key={e.id}
+                      className="group flex overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm hover:shadow-md transition-shadow"
+                    >
+                      <div className="relative w-28 sm:w-36 shrink-0 overflow-hidden bg-gradient-to-br from-green-100 to-emerald-200">
+                        {img ? (
+                          <img
+                            src={img}
+                            alt={e.title}
+                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center text-green-300 text-3xl select-none">
+                            🎉
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex min-w-0 flex-1 flex-col p-4">
+                        <div className="mb-1.5">
+                          <span
+                            className={`text-[11px] px-2.5 py-0.5 rounded-full font-bold tracking-wide ${eventCategoryColors[e.category] ?? 'bg-gray-100 text-gray-500'}`}
+                          >
+                            {e.category}
+                          </span>
+                        </div>
+                        <h3 className="font-bold text-gray-800 text-sm mb-1 line-clamp-2 group-hover:text-green-700 transition-colors">
+                          {e.title}
+                        </h3>
+                        {e.description && (
+                          <p className="text-xs text-gray-400 line-clamp-2 leading-relaxed mb-2">
+                            {e.description}
+                          </p>
+                        )}
+                        <div className="mt-auto flex items-center gap-1.5 text-xs text-gray-500">
+                          <Calendar size={12} />
+                          {new Date(e.startDate).toLocaleDateString(undefined, {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric',
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}

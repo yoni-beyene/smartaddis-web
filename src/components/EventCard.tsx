@@ -79,13 +79,15 @@ export default function EventCard({ event }: { event: Event }) {
             {event.title}
           </h3>
           <p className="text-xs text-gray-400 line-clamp-2 mb-3 leading-relaxed">{event.description}</p>
-          <Link
-            to={`/parks/${event.park.slug}`}
-            className="inline-flex items-center gap-1 text-xs text-gray-400 hover:text-green-600 transition-colors"
-          >
-            <MapPin size={11} />
-            <span className="truncate">{event.park.name}</span>
-          </Link>
+          {event.park && (
+            <Link
+              to={`/parks/${event.park.slug}`}
+              className="inline-flex items-center gap-1 text-xs text-gray-400 hover:text-green-600 transition-colors"
+            >
+              <MapPin size={11} />
+              <span className="truncate">{event.park.name}</span>
+            </Link>
+          )}
         </div>
       </div>
     </div>

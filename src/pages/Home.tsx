@@ -42,7 +42,7 @@ export default function Home() {
 
   useEffect(() => {
     Promise.all([
-      parksApi.list().then((r) => setParks(r.data.slice(0, 4))),
+      parksApi.list().then((r) => setParks(r.data.slice(0, 6))),
       eventsApi.list().then((r) => setEvents(r.data.slice(0, 3))),
     ]).finally(() => setLoading(false));
   }, []);
@@ -128,8 +128,102 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── FEATURED PARKS ─────────────────────────────────────── */}
+      <section className="pt-20 pb-10 bg-gray-50/70">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex items-end justify-between mb-10">
+            <div>
+              <p className="text-xs font-bold tracking-widest text-emerald-600 uppercase mb-2">
+                Green Spaces
+              </p>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900">Featured Parks</h2>
+            </div>
+            <Link
+              to="/parks"
+              className="hidden sm:inline-flex items-center gap-2 text-sm font-semibold text-green-600 hover:text-green-700 border border-green-200 hover:border-green-400 px-5 py-2.5 rounded-full transition-all"
+            >
+              View all <ArrowRight size={14} />
+            </Link>
+          </div>
+
+          {loading ? (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              <div className="lg:col-span-7 h-[22rem] rounded-3xl bg-gray-200 animate-pulse" />
+              <div className="lg:col-span-5 flex flex-col gap-6">
+                <div className="flex-1 min-h-[10rem] rounded-3xl bg-gray-200 animate-pulse" />
+                <div className="flex-1 min-h-[10rem] rounded-3xl bg-gray-200 animate-pulse" />
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* Featured row — one big park + two stacked beside it */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                {parks[0] && (
+                  <div className="lg:col-span-7">
+                    <ParkCard park={parks[0]} variant="featured" />
+                  </div>
+                )}
+                {parks.length > 1 && (
+                  <div className="lg:col-span-5 flex flex-col gap-6">
+                    {parks.slice(1, 3).map((park) => (
+                      <div key={park.id} className="flex-1 [&>a]:h-full">
+                        <ParkCard park={park} variant="compact" />
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Remaining parks */}
+              {parks.length > 3 && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+                  {parks.slice(3).map((park) => (
+                    <ParkCard key={park.id} park={park} />
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+
+          <div className="text-center mt-8 sm:hidden">
+            <Link
+              to="/parks"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-green-600 border border-green-200 px-5 py-2.5 rounded-full"
+            >
+              View all parks <ArrowRight size={14} />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── UPCOMING EVENTS ────────────────────────────────────── */}
+      {!loading && events.length > 0 && (
+        <section className="pt-10 pb-20 bg-white">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="flex items-end justify-between mb-10">
+              <div>
+                <p className="text-xs font-bold tracking-widest text-emerald-600 uppercase mb-2">
+                  What's On
+                </p>
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900">Upcoming Events</h2>
+              </div>
+              <Link
+                to="/events"
+                className="hidden sm:inline-flex items-center gap-2 text-sm font-semibold text-green-600 hover:text-green-700 border border-green-200 hover:border-green-400 px-5 py-2.5 rounded-full transition-all"
+              >
+                View all <ArrowRight size={14} />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {events.map((event) => <EventCard key={event.id} event={event} />)}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ── FEATURES ───────────────────────────────────────────── */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-gray-50/70">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-14">
             <p className="text-xs font-bold tracking-widest text-emerald-600 uppercase mb-3">
@@ -159,69 +253,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* ── FEATURED PARKS ─────────────────────────────────────── */}
-      <section className="py-20 bg-gray-50/70">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex items-end justify-between mb-10">
-            <div>
-              <p className="text-xs font-bold tracking-widest text-emerald-600 uppercase mb-2">
-                Green Spaces
-              </p>
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900">Featured Parks</h2>
-            </div>
-            <Link
-              to="/parks"
-              className="hidden sm:inline-flex items-center gap-2 text-sm font-semibold text-green-600 hover:text-green-700 border border-green-200 hover:border-green-400 px-5 py-2.5 rounded-full transition-all"
-            >
-              View all <ArrowRight size={14} />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {loading
-              ? Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} className="h-72 rounded-3xl bg-gray-200 animate-pulse" />
-                ))
-              : parks.map((park) => <ParkCard key={park.id} park={park} />)}
-          </div>
-
-          <div className="text-center mt-8 sm:hidden">
-            <Link
-              to="/parks"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-green-600 border border-green-200 px-5 py-2.5 rounded-full"
-            >
-              View all parks <ArrowRight size={14} />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ── UPCOMING EVENTS ────────────────────────────────────── */}
-      {!loading && events.length > 0 && (
-        <section className="py-20 bg-white">
-          <div className="max-w-6xl mx-auto px-4">
-            <div className="flex items-end justify-between mb-10">
-              <div>
-                <p className="text-xs font-bold tracking-widest text-emerald-600 uppercase mb-2">
-                  What's On
-                </p>
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-900">Upcoming Events</h2>
-              </div>
-              <Link
-                to="/events"
-                className="hidden sm:inline-flex items-center gap-2 text-sm font-semibold text-green-600 hover:text-green-700 border border-green-200 hover:border-green-400 px-5 py-2.5 rounded-full transition-all"
-              >
-                View all <ArrowRight size={14} />
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {events.map((event) => <EventCard key={event.id} event={event} />)}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* ── CTA BANNER ─────────────────────────────────────────── */}
       <section className="py-20 bg-gradient-to-br from-green-700 to-emerald-600 relative overflow-hidden">
