@@ -3,7 +3,8 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { Link } from 'react-router-dom';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { parksApi, Park } from '../api/parks.api';
+import { parksApi } from '../api/parks.api';
+import type { Park } from '../api/parks.api';
 
 // Fix leaflet default marker icons (broken by Vite asset bundling)
 delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)['_getIconUrl'];

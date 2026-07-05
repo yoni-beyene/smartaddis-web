@@ -1,5 +1,13 @@
 import client from './client';
 
+/** Resolve a relative /uploads/ path to an absolute URL */
+export function mediaUrl(url: string): string {
+  if (!url) return '';
+  if (url.startsWith('http')) return url;
+  const base = (import.meta.env.VITE_API_URL as string).replace('/api', '');
+  return `${base}${url}`;
+}
+
 export interface Park {
   id: string; name: string; slug: string; description: string; history?: string;
   latitude: number; longitude: number; openingHours: Record<string, string>;

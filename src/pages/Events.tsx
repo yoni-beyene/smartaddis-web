@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { eventsApi, Event } from '../api/events.api';
+import { eventsApi } from '../api/events.api';
+import type { Event } from '../api/events.api';
 import EventCard from '../components/EventCard';
 
 const categories = ['ALL', 'CULTURAL', 'FESTIVAL', 'COMMUNITY', 'SEASONAL'] as const;

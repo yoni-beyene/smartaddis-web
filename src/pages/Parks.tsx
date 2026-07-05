@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Search } from 'lucide-react';
-import { parksApi, Park } from '../api/parks.api';
+import { parksApi } from '../api/parks.api';
+import type { Park } from '../api/parks.api';
 import ParkCard from '../components/ParkCard';
 
 export default function Parks() {

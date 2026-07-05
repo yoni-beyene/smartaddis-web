@@ -1,0 +1,46 @@
+<svg width="600" height="200" viewBox="0 0 600 200" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>Smart Addis Logo</title>
+  <desc>Smart Addis wordmark with a map pin icon incorporating a leaf</desc>
+
+  <style>
+    .bg { fill: white; }
+    .pin-body { fill: #2d6a4f; }
+    .pin-circle { fill: #d8f3dc; }
+    .leaf { fill: #2d6a4f; }
+    .leaf-vein { stroke: #d8f3dc; stroke-width: 1.2px; fill: none; stroke-linecap: round; }
+    .pin-base { fill: #52b788; opacity: 0.55; }
+    .wordmark { font-family: 'Space Grotesk', Arial, sans-serif; font-size: 48px; font-weight: 700; fill: #1a3d2b; letter-spacing: -1px; }
+    .tagline { font-family: 'Space Grotesk', Arial, sans-serif; font-size: 13px; font-weight: 400; fill: #52b788; letter-spacing: 0.2em; }
+    .rule { stroke: #52b788; stroke-width: 0.8px; opacity: 0.35; }
+  </style>
+
+  <!-- Background -->
+  <rect class="bg" width="600" height="200" rx="8"/>
+
+  <!-- Pin shape -->
+  <path class="pin-body"
+        d="M 52 36
+           C 52 14 68 4 84 4
+           C 100 4 116 14 116 36
+           C 116 58 84 92 84 92
+           C 84 92 52 58 52 36 Z"/>
+
+  <!-- Inner circle -->
+  <circle class="pin-circle" cx="84" cy="35" r="17"/>
+
+  <!-- Leaf -->
+  <path class="leaf" d="M 84 23 C 72 30 70 44 84 47 C 98 44 96 30 84 23 Z"/>
+  <line class="leaf-vein" x1="84" y1="23" x2="84" y2="47"/>
+
+  <!-- Pin base nub -->
+  <rect class="pin-base" x="76" y="92" width="16" height="5" rx="2.5"/>
+
+  <!-- Wordmark -->
+  <text x="136" y="72" class="wordmark">Smart Addis</text>
+
+  <!-- Tagline -->
+  <text x="138" y="100" class="tagline">EXPLORE · DISCOVER · WANDER</text>
+
+  <!-- Divider -->
+  <line class="rule" x1="52" y1="118" x2="548" y2="118"/>
+</svg>
