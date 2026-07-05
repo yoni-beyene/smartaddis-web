@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import { parksApi } from '../api/parks.api';
 import type { Park } from '../api/parks.api';
@@ -7,8 +8,9 @@ import ParkCard from '../components/ParkCard';
 
 export default function Parks() {
   const { t } = useTranslation();
+  const [searchParams] = useSearchParams();
   const [parks, setParks] = useState<Park[]>([]);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(searchParams.get('search') ?? '');
 
   const load = useCallback(() => {
     parksApi.list(search || undefined).then((r) => setParks(r.data));

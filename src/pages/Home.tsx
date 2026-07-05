@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { parksApi } from '../api/parks.api';
 import type { Park } from '../api/parks.api';
 import { eventsApi } from '../api/events.api';
 import type { Event } from '../api/events.api';
 import ParkCard from '../components/ParkCard';
 import EventCard from '../components/EventCard';
-import { ArrowRight, MapPin, QrCode, Bell } from 'lucide-react';
+import { ArrowRight, MapPin, QrCode, Bell, Search, Map as MapIcon } from 'lucide-react';
 
 const FEATURES = [
   {
@@ -36,9 +36,11 @@ const STATS = [
 ];
 
 export default function Home() {
+  const navigate = useNavigate();
   const [parks, setParks] = useState<Park[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState('');
 
   useEffect(() => {
     Promise.all([
@@ -47,10 +49,16 @@ export default function Home() {
     ]).finally(() => setLoading(false));
   }, []);
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = query.trim();
+    navigate(q ? `/parks?search=${encodeURIComponent(q)}` : '/parks');
+  };
+
   return (
     <div className="overflow-x-hidden">
       {/* ── HERO ───────────────────────────────────────────────── */}
-      <section className="relative min-h-[88vh] flex flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-green-950 via-green-800 to-emerald-700">
+      <section className="relative min-h-[92vh] flex flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-green-950 via-green-900 to-emerald-800">
         {/* Dot grid */}
         <div
           className="absolute inset-0 opacity-[0.07]"
@@ -59,71 +67,153 @@ export default function Home() {
             backgroundSize: '32px 32px',
           }}
         />
-        {/* Ambient glows */}
-        <div className="absolute top-16 left-8 w-80 h-80 bg-emerald-400/20 rounded-full blur-3xl animate-pulse" />
+        {/* Radial spotlight */}
         <div
-          className="absolute bottom-28 right-8 w-96 h-96 bg-green-300/10 rounded-full blur-3xl animate-pulse"
+          className="absolute inset-0"
+          style={{
+            background:
+              'radial-gradient(ellipse 80% 60% at 50% -10%, rgba(52,211,153,0.22), transparent 70%)',
+          }}
+        />
+        {/* Ambient glows */}
+        <div className="absolute -top-10 left-4 w-80 h-80 bg-emerald-400/20 rounded-full blur-3xl animate-pulse" />
+        <div
+          className="absolute bottom-24 right-4 w-96 h-96 bg-teal-300/10 rounded-full blur-3xl animate-pulse"
           style={{ animationDelay: '1.5s' }}
         />
+        <div
+          className="absolute top-1/3 right-1/4 w-64 h-64 bg-lime-300/10 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: '0.8s' }}
+        />
 
-        <div className="relative z-10 max-w-5xl mx-auto px-6 text-center text-white pt-12 pb-20">
+        {/* Floating decorative leaves */}
+        <span
+          className="pointer-events-none absolute top-24 left-[10%] text-4xl opacity-20 animate-bounce hidden md:block"
+          style={{ animationDuration: '4s' }}
+        >
+          🌿
+        </span>
+        <span
+          className="pointer-events-none absolute bottom-40 left-[7%] text-3xl opacity-20 animate-bounce hidden md:block"
+          style={{ animationDuration: '5s', animationDelay: '1s' }}
+        >
+          🍃
+        </span>
+        <span
+          className="pointer-events-none absolute top-40 right-[9%] text-4xl opacity-20 animate-bounce hidden md:block"
+          style={{ animationDuration: '4.5s', animationDelay: '0.5s' }}
+        >
+          🌳
+        </span>
+
+        <div className="relative z-10 max-w-5xl mx-auto px-6 text-center text-white pt-16 pb-24">
           {/* Location badge */}
-          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-5 py-2 mb-8 text-sm font-medium">
-            <MapPin size={14} className="text-emerald-300" />
+          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-5 py-2 mb-8 text-sm font-medium shadow-lg shadow-emerald-950/30">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+            </span>
             <span className="text-green-100">Addis Ababa, Ethiopia 🇪🇹</span>
           </div>
 
           {/* Headline */}
-          <h1 className="text-5xl md:text-7xl font-extrabold leading-[1.07] mb-6 tracking-tight">
+          <h1 className="text-5xl md:text-7xl font-extrabold leading-[1.05] mb-6 tracking-tight">
             Discover{' '}
-            <span className="text-emerald-300 italic">Nature</span>
-            <br />in the City
+            <span className="bg-gradient-to-r from-emerald-300 via-lime-200 to-emerald-300 bg-clip-text text-transparent italic">
+              Nature
+            </span>
+            <br />in the Heart of the City
           </h1>
 
-          <p className="text-green-100/80 text-xl mb-10 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-green-100/80 text-lg md:text-xl mb-9 max-w-2xl mx-auto leading-relaxed">
             Explore Addis Ababa's parks, attend cultural events, and experience the green heart
             of Ethiopia's capital — all in one place.
           </p>
 
+          {/* Search bar */}
+          <form onSubmit={handleSearch} className="max-w-xl mx-auto mb-8">
+            <div className="flex items-center gap-2 bg-white/95 backdrop-blur-md rounded-full p-2 pl-5 shadow-2xl shadow-emerald-950/40 border border-white/40 focus-within:ring-2 focus-within:ring-emerald-400/60 transition">
+              <Search size={20} className="text-gray-400 shrink-0" />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search parks, gardens, green spaces…"
+                aria-label="Search parks"
+                className="flex-1 bg-transparent text-gray-800 placeholder-gray-400 text-base focus:outline-none min-w-0"
+              />
+              <button
+                type="submit"
+                className="inline-flex items-center gap-1.5 bg-green-700 hover:bg-green-800 text-white font-semibold text-sm px-5 py-3 rounded-full transition-colors active:scale-95 shrink-0"
+              >
+                Search <ArrowRight size={16} />
+              </button>
+            </div>
+          </form>
+
           {/* CTA buttons */}
-          <div className="flex items-center justify-center gap-4 flex-wrap">
+          <div className="flex items-center justify-center gap-3 flex-wrap">
             <Link
               to="/parks"
-              className="inline-flex items-center gap-2 bg-emerald-400 text-green-950 px-8 py-4 rounded-full font-bold text-base hover:bg-emerald-300 active:scale-95 transition-all shadow-2xl shadow-emerald-900/50"
+              className="inline-flex items-center gap-2 bg-emerald-400 text-green-950 px-7 py-3.5 rounded-full font-bold text-base hover:bg-emerald-300 active:scale-95 transition-all shadow-2xl shadow-emerald-900/50"
             >
               Explore Parks <ArrowRight size={18} />
             </Link>
             <Link
               to="/map"
-              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/30 text-white px-8 py-4 rounded-full font-semibold text-base hover:bg-white/20 active:scale-95 transition-all"
+              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/30 text-white px-7 py-3.5 rounded-full font-semibold text-base hover:bg-white/20 active:scale-95 transition-all"
             >
-              View on Map
+              <MapIcon size={18} /> View on Map
             </Link>
           </div>
 
-          {/* Stats */}
-          <div className="mt-16 grid grid-cols-3 gap-3 max-w-xs mx-auto">
-            {STATS.map(({ value, label }) => (
-              <div
-                key={label}
-                className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-2xl py-4 px-2"
-              >
-                <div className="text-2xl font-extrabold text-emerald-300">{value}</div>
-                <div className="text-[11px] text-green-200 mt-0.5 leading-tight">{label}</div>
+          {/* Social proof + stats */}
+          <div className="mt-14 flex flex-col items-center gap-7">
+            <div className="flex items-center gap-3">
+              <div className="flex -space-x-2">
+                {['🌳', '🌿', '🏞️', '🌸'].map((emo, i) => (
+                  <div
+                    key={i}
+                    className="w-8 h-8 rounded-full bg-white/15 backdrop-blur-sm border border-white/30 flex items-center justify-center text-sm"
+                  >
+                    {emo}
+                  </div>
+                ))}
               </div>
-            ))}
+              <span className="text-sm text-green-100/80">
+                Loved by <b className="text-white font-semibold">thousands</b> of residents
+              </span>
+            </div>
+
+            <div className="grid grid-cols-3 gap-3 max-w-sm w-full">
+              {STATS.map(({ value, label }) => (
+                <div
+                  key={label}
+                  className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-2xl py-4 px-2 hover:bg-white/[0.14] transition-colors"
+                >
+                  <div className="text-2xl font-extrabold text-emerald-300">{value}</div>
+                  <div className="text-[11px] text-green-200 mt-0.5 leading-tight">{label}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Bottom wave */}
-        <div className="absolute bottom-0 left-0 right-0">
+        {/* Bottom wave — layered */}
+        <div className="absolute bottom-0 left-0 right-0 leading-none">
           <svg
-            viewBox="0 0 1440 72"
+            viewBox="0 0 1440 90"
             preserveAspectRatio="none"
-            className="w-full block"
-            style={{ fill: 'white', display: 'block' }}
+            className="w-full block h-[60px] md:h-[90px]"
           >
-            <path d="M0,36 C480,72 960,0 1440,36 L1440,72 L0,72 Z" />
+            <path
+              d="M0,50 C360,90 720,10 1080,40 C1260,55 1380,60 1440,50 L1440,90 L0,90 Z"
+              fill="#f9fafb"
+              fillOpacity="0.5"
+            />
+            <path
+              d="M0,62 C400,92 800,32 1200,58 C1320,66 1400,66 1440,62 L1440,90 L0,90 Z"
+              fill="#f9fafb"
+            />
           </svg>
         </div>
       </section>
