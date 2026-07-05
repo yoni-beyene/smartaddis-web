@@ -32,7 +32,6 @@ export default function EventCard({ event }: { event: Event }) {
 
   return (
     <div className="group bg-white rounded-3xl border border-gray-100 overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
-      {/* Cover image (shown if available) */}
       {imgSrc && (
         <div className="relative h-40 overflow-hidden">
           <img
