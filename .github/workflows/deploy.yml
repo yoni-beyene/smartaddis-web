@@ -2,7 +2,7 @@ name: Deploy React App to cPanel
 
 on:
   push:
-    branches: [main]   # change to "master" if that's your default branch
+    branches: [main]
 
 jobs:
   build-and-deploy:
@@ -22,13 +22,27 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Deploy to cPanel via rsync over SSH
-        uses: burnett01/rsync-deployments@7.0.1
+      - name: Package build
+        run: tar -czf dist.tar.gz -C dist .
+
+      - name: Upload build to server
+        uses: appleboy/scp-action@v0.1.7
         with:
-          switches: -avzr --delete --exclude=".well-known" --exclude="cgi-bin"
-          path: dist/
-          remote_path: /home/smartadd/public_html/
-          remote_host: ${{ secrets.SSH_HOST }}
-          remote_port: ${{ secrets.SSH_PORT }}
-          remote_user: ${{ secrets.SSH_USERNAME }}
-          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "dist.tar.gz"
+          target: "/home/smartadd/"
+
+      - name: Extract and clean up on server
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            rm -rf /home/smartadd/public_html/*
+            tar -xzf /home/smartadd/dist.tar.gz -C /home/smartadd/public_html/
+            rm /home/smartadd/dist.tar.gz
