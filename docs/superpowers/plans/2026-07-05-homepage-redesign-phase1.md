@@ -4,7 +4,7 @@
 
 **Goal:** Rebuild Smart Addis's homepage (design tokens, hero, Featured Parks, Upcoming Events) into a premium, imagery-rich, animated experience while staying on the existing Vite + React Router + Leaflet stack.
 
-**Architecture:** Extend Tailwind's theme with the brand palette and Inter font; add Framer Motion (primary animation library) and GSAP (narrowly, for one SVG effect). Extract the hero into its own component (`Hero.tsx`) and the events carousel into its own component (`UpcomingEventsCarousel.tsx`); extend `ParkCard.tsx` in place. `home.tsx` becomes a thin composition of these plus the unchanged Features/CTA sections. New pure-logic modules (`geo.ts`, `hours.ts`, `favorites.store.ts`) get real unit tests via a newly-added Vitest setup; UI/animation code is verified by `npm run build` plus manual browser checks (see Global Constraints).
+**Architecture:** Extend Tailwind's theme with the brand palette and Inter font; add Framer Motion (primary animation library) and GSAP (narrowly, for one SVG effect). Extract the hero into its own component (`Hero.tsx`) and the events carousel into its own component (`UpcomingEventsCarousel.tsx`); extend `ParkCard.tsx` in place. `Home.tsx` becomes a thin composition of these plus the unchanged Features/CTA sections. New pure-logic modules (`geo.ts`, `hours.ts`, `favorites.store.ts`) get real unit tests via a newly-added Vitest setup; UI/animation code is verified by `npm run build` plus manual browser checks (see Global Constraints).
 
 **Tech Stack:** Vite, React 19, TypeScript, Tailwind CSS 3, React Router 7, Zustand, Framer Motion (new), GSAP (new), Vitest + jsdom (new, dev-only).
 
@@ -987,15 +987,15 @@ git commit -m "Add Hero component with crossfading imagery, search, and animated
 
 ---
 
-### Task 8: Wire `Hero`, updated `ParkCard`, and `UpcomingEventsCarousel` into `home.tsx`
+### Task 8: Wire `Hero`, updated `ParkCard`, and `UpcomingEventsCarousel` into `Home.tsx`
 
 **Files:**
-- Modify: `src/pages/home.tsx`
+- Modify: `src/pages/Home.tsx`
 
 **Interfaces:**
 - Consumes: `Hero` (Task 7), `ParkCard` with `userLocation` prop (Task 5), `UpcomingEventsCarousel` (Task 6), `useUserLocation` (Task 2)
 
-- [ ] **Step 1: Replace `src/pages/home.tsx`**
+- [ ] **Step 1: Replace `src/pages/Home.tsx`**
 
 ```tsx
 import { useEffect, useMemo, useState } from 'react';
@@ -1222,7 +1222,7 @@ Open the printed local URL at `/`. Confirm: (a) hero background cross-fades betw
 - [ ] **Step 4: Commit**
 
 ```bash
-git add src/pages/home.tsx
+git add src/pages/Home.tsx
 git commit -m "Rebuild homepage with new Hero, Featured Parks, and Events carousel"
 ```
 
@@ -1314,5 +1314,5 @@ git commit -m "Read initial park search query from URL for hero search integrati
 ## Self-Review Notes
 
 - **Spec coverage:** design tokens/fonts/deps (Task 1), hero rebuild incl. crossfade imagery/parallax/markers/search/CTAs/stats/floating cards (Tasks 2, 7, 8), Featured Parks hours/distance/save (Tasks 2–5), Upcoming Events carousel (Tasks 6, 8), hero search wiring to Parks page (Task 9). All "out of scope" items from the spec (weather, visitor/attraction counts, attendance, Phase 2/3 sections, Next.js/Mapbox) are intentionally absent — matches spec.
-- **Type consistency checked:** `UserLocation` (Task 2) used identically in `ParkCard.tsx` (Task 5) and passed from `home.tsx` (Task 8) via `useUserLocation()`. `Park`/`Event` types used consistently from the existing API modules across `Hero.tsx`, `ParkCard.tsx`, `UpcomingEventsCarousel.tsx`, and `home.tsx`. `getTodayHours`/`DAY_NAMES` signatures match between `hours.ts` (Task 4) and its test and consumer (Task 5).
+- **Type consistency checked:** `UserLocation` (Task 2) used identically in `ParkCard.tsx` (Task 5) and passed from `Home.tsx` (Task 8) via `useUserLocation()`. `Park`/`Event` types used consistently from the existing API modules across `Hero.tsx`, `ParkCard.tsx`, `UpcomingEventsCarousel.tsx`, and `Home.tsx`. `getTodayHours`/`DAY_NAMES` signatures match between `hours.ts` (Task 4) and its test and consumer (Task 5).
 - **No placeholders:** every step has complete, runnable code; no TBDs.
