@@ -9,7 +9,7 @@ import EventCard from '../components/EventCard';
 import Reveal from '../components/Reveal';
 import HeroBloom from '../components/Bloom';
 import SectionHead from '../components/SectionHead';
-import { ArrowRight, MapPin, QrCode, Bell, Search, Map as MapIcon } from 'lucide-react';
+import { ArrowRight, MapPin, QrCode, Bell, Search, Star, Map as MapIcon } from 'lucide-react';
 
 const FEATURES = [
   {
@@ -35,12 +35,21 @@ const STATS = [
   { value: 'Free', label: 'Entry Available' },
 ];
 
+interface FeaturedReview {
+  body: string;
+  rating: number;
+  name: string;
+  parkName: string;
+  parkSlug: string;
+}
+
 export default function Home() {
   const navigate = useNavigate();
   const [parks, setParks] = useState<Park[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
+  const [featured, setFeatured] = useState<FeaturedReview | null>(null);
 
   useEffect(() => {
     Promise.all([
@@ -48,6 +57,50 @@ export default function Home() {
       eventsApi.list().then((r) => setEvents(r.data.slice(0, 3))),
     ]).finally(() => setLoading(false));
   }, []);
+
+  // Pull a real, strong review from the parks that have them
+  useEffect(() => {
+    const candidates = parks
+      .filter((p) => (p._count?.reviews ?? 0) > 0)
+      .sort((a, b) => (b._count?.reviews ?? 0) - (a._count?.reviews ?? 0))
+      .slice(0, 3);
+    if (candidates.length === 0) return;
+
+    let cancelled = false;
+    Promise.all(
+      candidates.map((p) =>
+        parksApi
+          .getReviews(p.id)
+          .then((r) => ({ park: p, reviews: r.data.reviews }))
+          .catch(() => null),
+      ),
+    ).then((results) => {
+      if (cancelled) return;
+      const pool: FeaturedReview[] = [];
+      results.forEach((res) => {
+        if (!res) return;
+        res.reviews.forEach((rv) => {
+          const body = rv.body?.trim() ?? '';
+          if (body.length >= 20 && rv.rating >= 4) {
+            pool.push({
+              body: body.length > 220 ? `${body.slice(0, 220).trimEnd()}…` : body,
+              rating: rv.rating,
+              name: rv.user.name,
+              parkName: res.park.name,
+              parkSlug: res.park.slug,
+            });
+          }
+        });
+      });
+      if (pool.length) {
+        pool.sort((a, b) => b.rating - a.rating || b.body.length - a.body.length);
+        setFeatured(pool[0]);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [parks]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -305,6 +358,42 @@ export default function Home() {
               </Link>
             </div>
           </div>
+        </section>
+      )}
+
+      {/* ── TESTIMONIAL — a real review from the community ──────── */}
+      {featured && (
+        <section className="relative overflow-hidden bg-forest-ink text-cotton py-20 md:py-24">
+          <HeroBloom
+            color="#F4B400"
+            className="pointer-events-none absolute -left-20 -bottom-24 w-[360px] opacity-[0.08] hidden md:block"
+          />
+          <Reveal className="relative max-w-3xl mx-auto px-6 text-center">
+            <div className="flex items-center justify-center gap-2.5 mb-6">
+              <span className="h-px w-7 bg-accent-gold" />
+              <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-accent-gold">
+                From the community
+              </span>
+            </div>
+            <div className="flex justify-center gap-1 mb-6">
+              {Array.from({ length: featured.rating }).map((_, i) => (
+                <Star key={i} size={18} className="fill-accent-gold text-accent-gold" />
+              ))}
+            </div>
+            <blockquote className="font-display font-normal text-2xl md:text-[2.1rem] leading-[1.32] tracking-tight text-cotton mb-8">
+              “{featured.body}”
+            </blockquote>
+            <div className="flex items-center justify-center gap-2.5 text-sm">
+              <span className="font-semibold text-cotton">{featured.name}</span>
+              <span aria-hidden className="text-accent-gold/50">✿</span>
+              <Link
+                to={`/parks/${featured.parkSlug}`}
+                className="text-accent-gold hover:underline underline-offset-4"
+              >
+                {featured.parkName}
+              </Link>
+            </div>
+          </Reveal>
         </section>
       )}
 
