@@ -122,7 +122,7 @@ export default function ServicesSection({ services }: ServicesSectionProps) {
                 className="w-full flex items-center justify-between p-2 -mx-2 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 <span className="text-base font-semibold text-forest-ink">
-                  {categoryConfig.label}
+                  {EMOJI_MAP[categoryConfig.types[0]] || '📌'} {categoryConfig.label}
                 </span>
                 <ChevronDown
                   size={20}
