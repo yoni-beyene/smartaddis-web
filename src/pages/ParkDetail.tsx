@@ -11,6 +11,7 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import ImageCarousel from '../components/ImageCarousel';
+import ServicesSection from '../components/ServicesSection';
 
 // Fix leaflet default marker icons
 delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)['_getIconUrl'];
@@ -87,11 +88,6 @@ export default function ParkDetail() {
   }
 
   const openingHoursEntries = Object.entries(park.openingHours as Record<string, string>);
-
-  const serviceEmoji: Record<string, string> = {
-    RESTAURANT: '🍽️', CAFETERIA: '☕', TOILET: '🚻',
-    PARKING: '🅿️', FIRST_AID: '🏥', SHOP: '🛍️',
-  };
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-10">
@@ -263,19 +259,7 @@ export default function ParkDetail() {
             ))}
           </div>
 
-          {park.services.length > 0 && (
-            <div className="bg-white rounded-2xl border border-gray-200 p-5">
-              <h3 className="font-display text-lg text-forest-ink mb-3">Services</h3>
-              <div className="grid grid-cols-2 gap-2">
-                {park.services.map((s) => (
-                  <div key={s.id} className="flex items-center gap-2 text-sm text-gray-600 bg-gray-50 rounded-lg px-3 py-2">
-                    <span>{serviceEmoji[s.type] ?? '🏷️'}</span>
-                    <span className="truncate">{s.name}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+          {park.services.length > 0 && <ServicesSection services={park.services} />}
 
           <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
             <div className="h-48">
